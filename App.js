@@ -1,10 +1,12 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack'
+import Constants from 'expo-constants';
 import Landing from './components/auth/Landing';
 import Register from './components/auth/Register';
 
 export default function App() {
+  console.log(Constants.manifest.extra.storageBucket);
   const { Navigator, Screen } = createStackNavigator();
   return (
     <NavigationContainer>
