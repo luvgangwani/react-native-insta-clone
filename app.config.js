@@ -1,4 +1,4 @@
-{
+export default {
   "expo": {
     "name": "insta-clone",
     "slug": "insta-clone",
