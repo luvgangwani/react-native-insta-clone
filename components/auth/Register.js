@@ -35,6 +35,7 @@ export default class Register extends Component {
                     />
                 <TextInput
                     style={registerInput}
+                    keyboardType="email-address"
                     placeholder="Email ID"
                     onChangeText={(email) => this.setState({ email })}
                     />
@@ -45,7 +46,6 @@ export default class Register extends Component {
                     onChangeText={(password) => this.setState({ password })}
                     /> 
                 <Button
-                    style={registerButton}
                     title="Register"
                     onPress={this.onRegister}
                     />                   
@@ -68,9 +68,4 @@ const styles = StyleSheet.create({
         width: 200,
         padding: 10,
     },
-
-    registerButton: {
-        marginTop: 10,
-        width: 100,
-    }
 })
