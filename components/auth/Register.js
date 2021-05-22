@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Button, TextInput, View } from 'react-native'
+import { Button, StyleSheet, TextInput, View } from 'react-native'
+import firebase from 'firebase';
 
 export default class Register extends Component {
     constructor(props) {
@@ -12,25 +13,39 @@ export default class Register extends Component {
         this.onRegister = this.onRegister.bind(this);
     }
     onRegister() {
-        console.log('Register');
+        const { email, password } = this.state;
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then(({ user }) => {
+            const { email } = user;
+            console.log(`User with ${email} registered!`);
+        })
+        .catch((error) => {
+            const { code, message } = error;
+            console.error(`Error ${code}: Message - ${message}`);
+        });
     }
     render() {
+        const { registerContainer, registerInput, registerButton } = styles;
         return (
-            <View>
+            <View style={registerContainer}>
                 <TextInput
+                    style={registerInput}
                     placeholder="Name"
                     onChangeText={(name) => this.setState({ name })}
                     />
                 <TextInput
+                    style={registerInput}
                     placeholder="Email ID"
                     onChangeText={(email) => this.setState({ email })}
                     />
                 <TextInput
+                    style={registerInput}
                     secureTextEntry={true}
                     placeholder="Password"
                     onChangeText={(password) => this.setState({ password })}
                     /> 
                 <Button
+                    style={registerButton}
                     title="Register"
                     onPress={this.onRegister}
                     />                   
@@ -38,3 +53,24 @@ export default class Register extends Component {
         )
     }
 }
+
+const styles = StyleSheet.create({
+    registerContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    registerInput: {
+        marginVertical: 5,
+        borderBottomColor: '#a5a58d',
+        borderBottomWidth: 1,
+        width: 200,
+        padding: 10,
+    },
+
+    registerButton: {
+        marginTop: 10,
+        width: 100,
+    }
+})

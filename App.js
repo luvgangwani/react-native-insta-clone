@@ -2,11 +2,30 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack'
 import Constants from 'expo-constants';
+import firebase from 'firebase';
 import Landing from './components/auth/Landing';
 import Register from './components/auth/Register';
 
 export default function App() {
-  console.log(Constants.manifest.extra.storageBucket);
+  // initialize firebase app
+  const {
+    apiKey,
+    authDomain,
+    projectId,
+    storageBucket,
+    messagingSenderId,
+    appId,
+  } = Constants.manifest.extra;
+
+  firebase.initializeApp({
+    apiKey,
+    authDomain,
+    projectId,
+    storageBucket,
+    messagingSenderId,
+    appId,
+  });
+
   const { Navigator, Screen } = createStackNavigator();
   return (
     <NavigationContainer>
