@@ -6,7 +6,7 @@ import firebase from 'firebase';
 import Landing from './components/auth/Landing';
 import Register from './components/auth/Register';
 import Login from './components/auth/Login';
-import { StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
 export class App extends Component {
   constructor(props) {
     super(props);
@@ -16,6 +16,9 @@ export class App extends Component {
       loggedIn: false,
       user: null,
     }
+
+    // bind functions to this context
+    this.onLogout = this.onLogout.bind(this);
   }
 
   componentDidMount() {
@@ -32,6 +35,20 @@ export class App extends Component {
     });
   }
   
+  onLogout() {
+    firebase.auth().signOut()
+    .then(() => {
+      this.setState({
+        loggedIn: false,
+        user: null,
+      });
+    })
+    .catch((error) => {
+      const { code, message } = error;
+      console.error(`Error ${code}: Message - ${message}`);
+    });
+  }
+
   render() {
     const { loaded, loggedIn, user } = this.state;
     const { appContainer } = styles;
@@ -71,6 +88,10 @@ export class App extends Component {
         if (loggedIn)
           renderJSX = <View style={appContainer}>
                         <Text>User { user.email } logged in!</Text>
+                        <Button
+                          title="Log out"
+                          onPress={this.onLogout}
+                        />
                       </View>
       }
 

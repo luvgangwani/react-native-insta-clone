@@ -23,8 +23,7 @@ export default class Register extends Component {
                 name,
                 email
             })
-            const { email } = user;
-            console.log(`User with ${email} registered!`);
+            console.log(`User with ${user.email} registered!`);
         })
         .catch((error) => {
             const { code, message } = error;
