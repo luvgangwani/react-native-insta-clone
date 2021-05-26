@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { Button, StyleSheet, TextInput, View } from 'react-native'
-import firebase from 'firebase';
+import { Button, StyleSheet, TextInput, View } from 'react-native';
+import { connect } from 'react-redux';
+import { register } from '../../redux/actions';
 
-export default class Register extends Component {
+class Register extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -14,21 +15,8 @@ export default class Register extends Component {
     }
     onRegister() {
         const { name, email, password } = this.state;
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then(({ user }) => {
-            // save user to firestore database
-            firebase.firestore().collection('users')
-            .doc(firebase.auth().currentUser.uid)
-            .set({
-                name,
-                email
-            })
-            console.log(`User with ${user.email} registered!`);
-        })
-        .catch((error) => {
-            const { code, message } = error;
-            console.error(`Error ${code}: Message - ${message}`);
-        });
+        // dispatch the "USER_REGISTER" action
+        this.props.register({ name, email, password });
     }
     render() {
         const { registerContainer, registerInput, registerButton } = styles;
@@ -75,3 +63,7 @@ const styles = StyleSheet.create({
         padding: 10,
     },
 })
+
+const mapActionToProps = { register }
+
+export default connect(null, mapActionToProps)(Register);

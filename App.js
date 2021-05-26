@@ -3,10 +3,16 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack'
 import Constants from 'expo-constants';
 import firebase from 'firebase';
+import { Provider } from 'react-redux';
+import { StyleSheet, Text, View } from 'react-native';
+
 import Landing from './components/auth/Landing';
 import Register from './components/auth/Register';
 import Login from './components/auth/Login';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import Main from './components/Main';
+import store from './redux/store';
+
+
 export class App extends Component {
   constructor(props) {
     super(props);
@@ -14,11 +20,7 @@ export class App extends Component {
     this.state = {
       loaded: false,
       loggedIn: false,
-      user: null,
     }
-
-    // bind functions to this context
-    this.onLogout = this.onLogout.bind(this);
   }
 
   componentDidMount() {
@@ -27,30 +29,15 @@ export class App extends Component {
       if (user)
         this.setState({
           loggedIn: true,
-          user
         });
     });
     this.setState({
       loaded: true,
     });
   }
-  
-  onLogout() {
-    firebase.auth().signOut()
-    .then(() => {
-      this.setState({
-        loggedIn: false,
-        user: null,
-      });
-    })
-    .catch((error) => {
-      const { code, message } = error;
-      console.error(`Error ${code}: Message - ${message}`);
-    });
-  }
 
   render() {
-    const { loaded, loggedIn, user } = this.state;
+    const { loaded, loggedIn } = this.state;
     const { appContainer } = styles;
     // initialize firebase app
     const {
@@ -86,17 +73,11 @@ export class App extends Component {
                       </Navigator>
                     </NavigationContainer>
         if (loggedIn)
-          renderJSX = <View style={appContainer}>
-                        <Text>User { user.email } logged in!</Text>
-                        <Button
-                          title="Log out"
-                          onPress={this.onLogout}
-                        />
-                      </View>
+          renderJSX = <Main />
       }
 
     
-    return renderJSX;
+    return <Provider store={store}>{renderJSX}</Provider>;
   }
 }
 
@@ -106,6 +87,5 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
   }
 });
-
 
 export default App
