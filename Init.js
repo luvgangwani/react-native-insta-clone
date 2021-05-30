@@ -28,12 +28,16 @@ class Init extends Component {
         const { authUser } = this.props;
         let renderJSX =     <NavigationContainer>
                                 <Navigator initialRouteName="Landing">
-                                <Screen name="Landing" component={Landing} options={{ headerShown: false }} />
-                                <Screen name="Register" component={Register} options={{ headerShown: false }} />
-                                <Screen name="Login" component={Login} options={{ headerShown: false }}/>
+                                    <Screen name="Landing" component={Landing} options={{ headerShown: false }} />
+                                    <Screen name="Register" component={Register} options={{ headerShown: false }} />
+                                    <Screen name="Login" component={Login} options={{ headerShown: false }}/>
                                 </Navigator>
                             </NavigationContainer>;
-        if (authUser) renderJSX = <Main />;
+        if (authUser) renderJSX =   <NavigationContainer>
+                                        <Navigator initialRouteName="Main">
+                                            <Screen name="Main" component={Main} options={{ headerShown: false }}/>
+                                        </Navigator>
+                                    </NavigationContainer>;
         return renderJSX;
     }
 }

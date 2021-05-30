@@ -1,49 +1,40 @@
 import React, { Component } from 'react'
-import { Button, StyleSheet, Text, View } from 'react-native';
 import { connect } from 'react-redux';
-import { logOut } from '../redux/actions/authActions';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
+import Feed from './main/Feed';
+import Add from './main/Add';
+import Profile from './main/Profile';
 
 export class Main extends Component {
     constructor(props) {
         super(props);
-
-        this.onLogout = this.onLogout.bind(this);
-    }
-
-    onLogout() {
-        // call the logout action
-        this.props.logOut();
-
     }
     
     render() {
-        const { mainContainer } = styles;
-        const { authUser } = this.props;
-        const { name } = authUser;
+
+        const { Navigator, Screen } = createMaterialBottomTabNavigator();
         return (
-            <View style={mainContainer}>
-                <Text>Welcome { name },</Text>
-                <Button
-                    title="Log out"
-                    onPress={this.onLogout}
-                />
-            </View>
+            <Navigator initialRouteName="Feed" labeled={false}>
+                <Screen name="Feed" component={Feed} options={{
+                    tabBarIcon: () => (
+                        <MaterialCommunityIcons name="home" color='#ffffff' size={20} />
+                    )
+                }} />
+                <Screen name="Add" component={Add} options={{
+                    tabBarIcon: () => (
+                        <MaterialCommunityIcons name="plus-circle" color='#ffffff' size={20} />
+                    )
+                 }} />
+                <Screen name="Profile" component={Profile} options={{
+                    tabBarIcon: () => (
+                        <MaterialCommunityIcons name="account-circle" color='#ffffff' size={20} />
+                    )
+                }}/>
+            </Navigator>
         );
     }
 }
 
-// get state from redux and map it to properties of this component
-const mapStateToProps = (state) => ({
-    authUser: state.auth.user,
-});
-
-const mapDispatchToProps = { logOut }
-
-const styles = StyleSheet.create({
-    mainContainer: {
-        flex: 1,
-        justifyContent: 'center',
-    }
-  });
-
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default connect()(Main);
