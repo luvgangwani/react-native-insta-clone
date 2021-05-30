@@ -1,27 +1,6 @@
 import firebase from 'firebase';
 import { SET_AUTH_USER_STATE } from './types';
 
-/* export const fetchUser = () => (dispatch) => {
-    console.log(`Signed in user: ${JSON.stringify(firebase.auth().currentUser)}` );
-    firebase
-    .firestore()
-    .collection('users')
-    .doc(firebase.auth().currentUser.uid)
-    .get()
-    .then((snapshot) => {
-        const { exists, data } = snapshot;
-        console.log(`Exists: ${exists}`);
-        if (exists) {
-            console.log(`Fetched data from 'users' collection. User: ${data()}`);
-            dispatch({ type: FETCH_USER, payload: data() })
-        }
-        else console.log('User does not exist!');
-    })
-    .catch((error) => {
-        console.log('Error:', error);
-    });
-
-} */
 
 export const register = (newUser) => (dispatch) => {
     const { name, email, password } = newUser;
@@ -49,7 +28,10 @@ export const register = (newUser) => (dispatch) => {
             .doc(uid)
             .get()
             .then((snapshot) => {
-                if (snapshot.exists) dispatch({ type: SET_AUTH_USER_STATE, payload: snapshot.data() })
+                if (snapshot.exists) {
+                    console.log(`Dispatching ${SET_AUTH_USER_STATE} action from register...`);
+                    dispatch({ type: SET_AUTH_USER_STATE, payload: snapshot.data() })
+                }
             })
             .catch(({ code, message }) => { console.log(`Error in retrieving registered user - ${code}: Message - ${ message }`)})
         })
@@ -82,11 +64,17 @@ export const verifyAuth = () => (dispatch) => {
             .doc(user.uid)
             .get()
             .then((snapshot) => {
-                if (snapshot.exists) dispatch({ type, payload: snapshot.data() });
+                if (snapshot.exists) {
+                    console.log(`Dispatching ${SET_AUTH_USER_STATE} action from verifyAuth when user exists...`);
+                    dispatch({ type, payload: snapshot.data() })
+                };
             })
             .catch(({ code, message }) => { console.log(`Error in verifying auth - ${code}: Message - ${ message }`)});
         }
-        else dispatch({ type, payload: null });
+        else {
+            console.log(`Dispatching ${SET_AUTH_USER_STATE} action from verifyAuth when user does not exist...`);
+            dispatch({ type, payload: null })
+        };
     });
 
 }
@@ -95,8 +83,9 @@ export const logOut = () => (dispatch) => {
     console.log('Attempting to logout..')
     firebase.auth().signOut()
     .then(() => {
-        dispatch({ type: SET_AUTH_USER_STATE, payload: null })
-        console.log('Logout successful!')
+        console.log(`User logged out successfully!`);
+        // no need of a separate dispatch action operation here
+        // onAuthStateChangedListener handles this
     })
     .catch((error) => {
         const { code, message } = error;

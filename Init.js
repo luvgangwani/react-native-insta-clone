@@ -8,6 +8,7 @@ import Register from './components/auth/Register';
 import Login from './components/auth/Login';
 import Main from './components/Main';
 import { verifyAuth } from './redux/actions/authActions';
+import Add from './components/main/Add';
 
 
 
@@ -36,6 +37,7 @@ class Init extends Component {
         if (authUser) renderJSX =   <NavigationContainer>
                                         <Navigator initialRouteName="Main">
                                             <Screen name="Main" component={Main} options={{ headerShown: false }}/>
+                                            <Screen name="Add" component={Add} />
                                         </Navigator>
                                     </NavigationContainer>;
         return renderJSX;

@@ -7,6 +7,7 @@ import Feed from './main/Feed';
 import Add from './main/Add';
 import Profile from './main/Profile';
 
+const EmptyScreen = () => (null);
 export class Main extends Component {
     constructor(props) {
         super(props);
@@ -22,7 +23,18 @@ export class Main extends Component {
                         <MaterialCommunityIcons name="home" color='#ffffff' size={20} />
                     )
                 }} />
-                <Screen name="Add" component={Add} options={{
+                <Screen
+                name="AddTab"
+                component={EmptyScreen}
+                listeners={
+                    ({ navigation }) => ({
+                        tabPress: (event) => {
+                            event.preventDefault();
+                            navigation.navigate('Add')
+                        }
+                    })
+                }
+                options={{
                     tabBarIcon: () => (
                         <MaterialCommunityIcons name="plus-circle" color='#ffffff' size={20} />
                     )

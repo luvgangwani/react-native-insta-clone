@@ -1,33 +1,24 @@
 import React from 'react'
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { connect } from 'react-redux';
-import { logOut } from '../../redux/actions/authActions';
 
 function Profile(props) {
 
-    const { mainContainer } = styles;
-    const { authUser, logOut } = props;
+    const { profileContainer } = styles;
+    const { authUser } = props;
     const { name, email } = authUser;
 
-    const onLogout = () => {
-        // call the logout action
-        logOut();
-    }
     return (
-        <View style={mainContainer}>
+        <View style={profileContainer}>
             <Text>Name: { name }</Text>
             <Text>Email: { email }</Text>
-            <Button
-                title="Log out"
-                onPress={onLogout}
-            />
         </View>
     )
 }
 
 
 const styles = StyleSheet.create({
-    mainContainer: {
+    profileContainer: {
         flex: 1,
         justifyContent: 'center',
     }
@@ -39,6 +30,4 @@ const mapStateToProps = (state) => ({
     authUser: state.auth.user,
 });
 
-const mapDispatchToProps = { logOut }
-
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default connect(mapStateToProps, null)(Profile);
