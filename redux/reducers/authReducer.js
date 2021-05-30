@@ -1,4 +1,4 @@
-import { FETCH_USER, USER_REGISTER } from '../actions/types';
+import { SET_AUTH_USER_STATE } from '../actions/types';
 const initialState = {
     user: null,
 };
@@ -7,18 +7,13 @@ export const auth = (state = initialState, action) => {
     const { type, payload } = action;
     let returnVal = state;
    switch (type) {
-       case FETCH_USER:
+       case SET_AUTH_USER_STATE:
+           console.log(`Dispatched ${SET_AUTH_USER_STATE}: Updating state`);
            returnVal = {
                ...state,
                user: payload,
            }
            break;
-        case USER_REGISTER:
-            returnVal = {
-                ...state,
-                user: payload,
-            }
-            break;
    
        default:
            break;

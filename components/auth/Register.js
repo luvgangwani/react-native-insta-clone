@@ -15,11 +15,11 @@ class Register extends Component {
     }
     onRegister() {
         const { name, email, password } = this.state;
-        // dispatch the "USER_REGISTER" action
+        // call the register action
         this.props.register({ name, email, password });
     }
     render() {
-        const { registerContainer, registerInput, registerButton } = styles;
+        const { registerContainer, registerInput } = styles;
         return (
             <View style={registerContainer}>
                 <TextInput

@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { Button, StyleSheet, TextInput, View } from 'react-native';
-import firebase from 'firebase';
+import { connect } from 'react-redux';
+import { logIn } from '../../redux/actions/authActions';
 
-export default class Login extends Component {
+
+class Login extends Component {
     constructor(props) {
         super(props);
 
@@ -14,14 +16,8 @@ export default class Login extends Component {
     }
     onLogin() {
         const { email, password } = this.state;
-        firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(({ user }) => {
-            const { email } = user;
-            console.log(`User ${ email } logged in!`);
-        })
-        .catch(({ code, message }) => {
-            console.log(`Error ${code}: Message - ${message}`);
-        })
+        // call the login action
+        this.props.logIn({ email, password });
     }
     render() {
         const { loginContainer, loginInput, loginButton } = styles;
@@ -70,3 +66,6 @@ const styles = StyleSheet.create({
         width: 100,
     }
 });
+
+const mapDispatchToProps = { logIn };
+export default connect(null, mapDispatchToProps)(Login);
