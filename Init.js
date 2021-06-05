@@ -9,6 +9,7 @@ import Login from './components/auth/Login';
 import Main from './components/Main';
 import { verifyAuth } from './redux/actions/authActions';
 import Add from './components/main/Add';
+import Save from './components/main/Save';
 
 
 
@@ -38,6 +39,7 @@ class Init extends Component {
                                         <Navigator initialRouteName="Main">
                                             <Screen name="Main" component={Main} options={{ headerShown: false }}/>
                                             <Screen name="Add" component={Add} />
+                                            <Screen name="Save" component={Save} options={{ headerShown: false }}/>
                                         </Navigator>
                                     </NavigationContainer>;
         return renderJSX;

@@ -7,7 +7,7 @@ import * as ImagePicker from 'expo-image-picker';
 // destructure the camera types (back camera/front camera)
 const { back, front } = Camera.Constants.Type;
 
-function Add() {
+function Add({ navigation }) {
     // tracks camera permissions
     const [hasCameraPermission, setHasCameraPermission] = useState(null);
     // track image picker permissions
@@ -56,6 +56,11 @@ function Add() {
             setImage(result.uri);
     }
 
+    // handler function to save image (pass data to the save screen)
+    const saveImage = async () => {
+        navigation.navigate('Save', {image});
+    }
+
     // rendering logic
 
     const { cameraContainer, camera: camStyle } = styles;
@@ -80,6 +85,9 @@ function Add() {
                             title="Pick image"
                             onPress={pickImage}
                         ></Button>
+                        <Button
+                            title="Save"
+                            onPress={saveImage}></Button>
                         { image && <Image source={{ uri: image }} style={{ flex: 1 }} />}
                     </View>;
 
