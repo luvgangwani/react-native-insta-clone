@@ -1,14 +1,17 @@
 import { Camera } from 'expo-camera';
 import React from 'react'
 import { useState, useEffect } from 'react';
-import { Button, Image, StyleSheet, Text, View } from 'react-native'
+import { Button, Image, StyleSheet, Text, View } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 
 // destructure the camera types (back camera/front camera)
 const { back, front } = Camera.Constants.Type;
 
 function Add() {
     // tracks camera permissions
-    const [hasPermission, setHasPermission] = useState(null);
+    const [hasCameraPermission, setHasCameraPermission] = useState(null);
+    // track image picker permissions
+    const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
     // track the camera type (back camera/front camera)
     // initial state is set to launch the back camera
     const [type, setType] = useState(back);
@@ -17,11 +20,14 @@ function Add() {
     // track the image uri
     const [image, setImage] = useState(null);
 
-    // check that the user has granted permissions to use the Camera when component mounts
+    // check that the user has granted permissions to use the Camera and Image picker when component mounts
     useEffect(() => {
         (async () => {
-            const { status } = await Camera.requestPermissionsAsync();
-            setHasPermission(status === 'granted');
+            const cameraStatus = await Camera.requestPermissionsAsync();
+            setHasCameraPermission(cameraStatus.status === 'granted');
+
+            const galleryStatus = await Camera.requestPermissionsAsync();
+            setHasGalleryPermission(galleryStatus.status === 'granted');
         })();
     }, []);
 
@@ -37,6 +43,18 @@ function Add() {
             setImage(uri);
         }
     };
+
+    // handler function to pick an image from your device
+    const pickImage = async () => {
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        });
+        if (!result.cancelled)
+            setImage(result.uri);
+    }
 
     // rendering logic
 
@@ -58,10 +76,14 @@ function Add() {
                             title="Take picture"
                             onPress={takePicture}
                         ></Button>
+                        <Button
+                            title="Pick image"
+                            onPress={pickImage}
+                        ></Button>
                         { image && <Image source={{ uri: image }} style={{ flex: 1 }} />}
                     </View>;
 
-    if (!hasPermission) renderJSX = <Text>No access to camera</Text>;
+    if (!hasCameraPermission || !hasGalleryPermission) renderJSX = <Text>No access to camera</Text>;
 
     return renderJSX;
 }
