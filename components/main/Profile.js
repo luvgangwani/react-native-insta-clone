@@ -49,8 +49,7 @@ const styles = StyleSheet.create({
         marginTop: 40,
     },
     personalDetailsContainer: {
-        flex: 1,
-        marginTop: 20,
+        margin: 20,
     },
     galleryContainer: {
         flex: 1,
