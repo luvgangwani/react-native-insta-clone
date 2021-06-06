@@ -1,17 +1,43 @@
-import React from 'react'
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect } from 'react'
+import { FlatList, Image, StyleSheet, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 
-function Profile(props) {
+import { fetchUserPosts } from '../../redux/actions/postActions';
 
-    const { profileContainer } = styles;
-    const { authUser } = props;
+function Profile({ authUser, posts, fetchUserPosts }) {
+
+    useEffect(() => {
+        fetchUserPosts();
+    }, []);
+    const { 
+        profileContainer,
+        personalDetailsContainer,
+        galleryContainer,
+        img,
+        imgContainer
+    } = styles;
     const { name, email } = authUser;
-
     return (
         <View style={profileContainer}>
-            <Text>Name: { name }</Text>
-            <Text>Email: { email }</Text>
+            <View style={personalDetailsContainer}>
+                <Text>{ name }</Text>
+                <Text>{ email }</Text>
+            </View>
+            <View style={galleryContainer}>
+                <FlatList
+                    data={posts}
+                    numColumns={3}
+                    horizontal={false}
+                    renderItem={ ({ item }) => (
+                        <View style={imgContainer}>
+                            <Image
+                                style={img}
+                                source={{ uri: item.downloadURL }}
+                            />
+                        </View>
+                    )}
+                />
+            </View>
         </View>
     )
 }
@@ -20,14 +46,31 @@ function Profile(props) {
 const styles = StyleSheet.create({
     profileContainer: {
         flex: 1,
-        justifyContent: 'center',
-    }
+        marginTop: 40,
+    },
+    personalDetailsContainer: {
+        flex: 1,
+        marginTop: 20,
+    },
+    galleryContainer: {
+        flex: 1,
+    },
+    imgContainer: {
+        flex: 1/3,
+    },
+    img: {
+        flex: 1,
+        aspectRatio: 1/1
+    },
   });
 
 
 // get state from redux and map it to properties of this component
 const mapStateToProps = (state) => ({
     authUser: state.auth.user,
+    posts: state.posts.all,
 });
 
-export default connect(mapStateToProps, null)(Profile);
+const mapDispatchToProps = { fetchUserPosts }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);

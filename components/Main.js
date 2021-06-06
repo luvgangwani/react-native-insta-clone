@@ -4,7 +4,6 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import Feed from './main/Feed';
-import Add from './main/Add';
 import Profile from './main/Profile';
 
 const EmptyScreen = () => (null);

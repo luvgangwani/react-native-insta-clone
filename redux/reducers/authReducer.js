@@ -8,7 +8,6 @@ export const auth = (state = initialState, action) => {
     let returnVal = state;
    switch (type) {
        case SET_AUTH_USER_STATE:
-           console.log(`Dispatched ${SET_AUTH_USER_STATE}: Updating state`);
            returnVal = {
                ...state,
                user: payload,
