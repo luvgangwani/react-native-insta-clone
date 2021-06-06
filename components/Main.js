@@ -5,6 +5,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 
 import Feed from './main/Feed';
 import Profile from './main/Profile';
+import Search from './main/Search';
 
 const EmptyScreen = () => (null);
 export class Main extends Component {
@@ -22,6 +23,15 @@ export class Main extends Component {
                         <MaterialCommunityIcons name="home" color='#ffffff' size={20} />
                     )
                 }} />
+                <Screen
+                    name="Search"
+                    component={Search} options={{
+                        tabBarIcon: () => (
+                            <MaterialCommunityIcons name="magnify" color='#ffffff' size={20} />
+                        )
+                    }}
+                
+                />
                 <Screen
                 name="AddTab"
                 component={EmptyScreen}
