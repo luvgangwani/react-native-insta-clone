@@ -1,14 +1,39 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FlatList, Image, StyleSheet, Text, View } from 'react-native';
 import { connect } from 'react-redux';
+import firebase from 'firebase';
 
 import { fetchUserPosts } from '../../redux/actions/postActions';
 
-function Profile({ authUser, posts, fetchUserPosts }) {
+function Profile({ authUser, posts, fetchUserPosts, route }) {
 
+    // get the uid
+    // this is done since the profile to be shown can be of the current user or a user you have searched for
+    const uid = route.params.uid;
+
+    // track user details state
+    // this is to evaluate which user details are to be shown
+    // load profile of the logged in user by default
+    const [user, setUser] = useState(authUser);
+    
     useEffect(() => {
-        fetchUserPosts();
-    }, []);
+        // if the uid of the requested users' profile does not match the logged in user
+        // fetch details of the requested user and update the state
+        if (uid !== firebase.auth().currentUser.uid)
+            firebase
+            .firestore()
+            .collection('users')
+            .doc(uid)
+            .get()
+            .then((snapshot) => {
+                if(snapshot.exists) setUser(snapshot.data());
+            });
+        // else update the state with the logged in user
+        else setUser(authUser);
+        // get use posts based on uid
+        fetchUserPosts(uid);
+    }, [uid]);
+
     const { 
         profileContainer,
         personalDetailsContainer,
@@ -16,7 +41,8 @@ function Profile({ authUser, posts, fetchUserPosts }) {
         img,
         imgContainer
     } = styles;
-    const { name, email } = authUser;
+
+    const { name, email } = user;
     return (
         <View style={profileContainer}>
             <View style={personalDetailsContainer}>

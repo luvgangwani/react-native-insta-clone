@@ -1,11 +1,11 @@
 import firebase from 'firebase';
 import { SET_USER_POSTS_STATE } from './types';
 
-export const fetchUserPosts = () => (dispatch) => {
+export const fetchUserPosts = (uid) => (dispatch) => {
     firebase
     .firestore()
     .collection('posts')
-    .doc(firebase.auth().currentUser.uid)
+    .doc(uid)
     .collection('userPosts')
     .orderBy('creation', 'asc')
     .get()

@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
-import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native'
+import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import firebase from 'firebase';
 
-export default function Search() {
+export default function Search({ navigation }) {
     // track the fetched users
     const [users, setUsers] = useState([]);
     const {
         parentContainer,
         searchContainer,
-        searchResultsContainer
+        searchResultsContainer,
+        searchResult,
     } = styles;
 
     // handler for search text change
@@ -23,6 +24,12 @@ export default function Search() {
             setUsers(users);
         });
     };
+
+    // handler for search result press
+    const handleSearchResultPress = (id) => {
+        navigation.navigate('Profile', { uid: id });
+    };
+
     return (
         <View style={parentContainer}>
             <View style={searchContainer}>
@@ -36,7 +43,11 @@ export default function Search() {
                     numColumns={1}
                     data={users}
                     renderItem={({ item }) => (
-                        <Text>{ item.name }</Text>
+                        <TouchableOpacity
+                            onPress={ () => handleSearchResultPress(item.id) }
+                        >
+                            <Text style={searchResult}>{ item.name }</Text>
+                        </TouchableOpacity>
                     )}
                 />
             </View>
@@ -55,5 +66,8 @@ const styles = StyleSheet.create({
     searchResultsContainer: {
         flex: 1,
         margin: 20,
+    },
+    searchResult: {
+        paddingVertical: 20,
     }
 });
