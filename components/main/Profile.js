@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { FlatList, Image, StyleSheet, Text, View } from 'react-native';
+import { Button, FlatList, Image, StyleSheet, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 
 import { fetchUserPosts } from '../../redux/actions/postActions';
+import { logOut } from '../../redux/actions/authActions';
 
-function Profile({ authUser, posts, fetchUserPosts, route }) {
+function Profile({ authUser, posts, fetchUserPosts, route, logOut }) {
 
     // get the uid
     // this is done since the profile to be shown can be of the current user or a user you have searched for
@@ -15,6 +16,10 @@ function Profile({ authUser, posts, fetchUserPosts, route }) {
     // this is to evaluate which user details are to be shown
     // load profile of the logged in user by default
     const [user, setUser] = useState(authUser);
+
+    const handleLogout = () => {
+        logOut();
+    }
     
     useEffect(() => {
         // if the uid of the requested users' profile does not match the logged in user
@@ -34,6 +39,19 @@ function Profile({ authUser, posts, fetchUserPosts, route }) {
         fetchUserPosts(uid);
     }, [uid]);
 
+    const personalDetailsSibling = () => {
+        let elReturn = null;
+        // check that the current use is not null
+        // Refer https://stackoverflow.com/a/59601773
+        if (firebase.auth().currentUser) {
+            if (uid === firebase.auth().currentUser.uid)
+                elReturn = <Button
+                            title="Logout"
+                            onPress={ handleLogout }></Button>
+        }
+        return elReturn;
+    }
+
     const { 
         profileContainer,
         personalDetailsContainer,
@@ -49,6 +67,7 @@ function Profile({ authUser, posts, fetchUserPosts, route }) {
                 <Text>{ name }</Text>
                 <Text>{ email }</Text>
             </View>
+            { personalDetailsSibling() }
             <View style={galleryContainer}>
                 <FlatList
                     data={posts}
@@ -79,6 +98,7 @@ const styles = StyleSheet.create({
     },
     galleryContainer: {
         flex: 1,
+        marginTop: 20,
     },
     imgContainer: {
         flex: 1/3,
@@ -96,6 +116,6 @@ const mapStateToProps = (state) => ({
     posts: state.posts.all,
 });
 
-const mapDispatchToProps = { fetchUserPosts }
+const mapDispatchToProps = { fetchUserPosts, logOut }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

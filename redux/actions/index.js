@@ -1,7 +1,8 @@
-import { fetchUser, register } from './authActions';
+import { fetchUser, register, logOut } from './authActions';
 
 
 export {
     fetchUser,
     register,
+    logOut,
 }

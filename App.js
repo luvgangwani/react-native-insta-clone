@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import Constants from 'expo-constants';
 import firebase from 'firebase';
 import { Provider } from 'react-redux';
-import { StyleSheet, Text, View } from 'react-native';
+import { LogBox, StyleSheet, Text, View } from 'react-native';
 import store from './redux/store';
 import Init from './Init';
 
+LogBox.ignoreLogs(['Setting a timer']);
 
 export class App extends Component {
   constructor(props) {
