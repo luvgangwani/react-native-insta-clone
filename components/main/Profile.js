@@ -5,8 +5,9 @@ import firebase from 'firebase';
 
 import { fetchUserPosts } from '../../redux/actions/postActions';
 import { logOut } from '../../redux/actions/authActions';
+import { registerFetchListenerForUserFollowing } from '../../redux/actions/';
 
-function Profile({ authUser, posts, fetchUserPosts, route, logOut }) {
+function Profile({ authUser, posts, fetchUserPosts, route, logOut, registerFetchListenerForUserFollowing, following }) {
 
     // get the uid
     // this is done since the profile to be shown can be of the current user or a user you have searched for
@@ -17,9 +18,41 @@ function Profile({ authUser, posts, fetchUserPosts, route, logOut }) {
     // load profile of the logged in user by default
     const [user, setUser] = useState(authUser);
 
+    // track if the loaded profile is followed by the current user
+    const [isFollowing, setIsFollowing] = useState(false);
+
+    // handler function for Logout button
     const handleLogout = () => {
         logOut();
-    }
+    };
+
+    // handler function for Follow button
+    const handleFollow = () => {
+        firebase
+        .firestore()
+        .collection('following')
+        .doc(firebase.auth().currentUser.uid)
+        .collection('userFollowing')
+        .doc(uid)
+        .set({});
+    };
+
+    // handler function for Following button
+    const handleFollowing = () => {
+        firebase
+        .firestore()
+        .collection('following')
+        .doc(firebase.auth().currentUser.uid)
+        .collection('userFollowing')
+        .doc(uid)
+        .delete();
+    };
+
+    // run this once when the component mounts
+    useEffect(() => {
+        // register a listener to update the array that lists the users the logged in user is following
+        registerFetchListenerForUserFollowing();
+    }, []);
     
     useEffect(() => {
         // if the uid of the requested users' profile does not match the logged in user
@@ -37,7 +70,11 @@ function Profile({ authUser, posts, fetchUserPosts, route, logOut }) {
         else setUser(authUser);
         // get use posts based on uid
         fetchUserPosts(uid);
-    }, [uid]);
+
+        // update the isFollowing to true if the logged in user follows the loaded profile
+        if (following && following.includes(uid)) setIsFollowing(true);
+        else setIsFollowing(false);
+    }, [uid, following]);
 
     const personalDetailsSibling = () => {
         let elReturn = null;
@@ -47,7 +84,18 @@ function Profile({ authUser, posts, fetchUserPosts, route, logOut }) {
             if (uid === firebase.auth().currentUser.uid)
                 elReturn = <Button
                             title="Logout"
-                            onPress={ handleLogout }></Button>
+                            onPress={ handleLogout }></Button>;
+            else {
+                if (isFollowing)
+                    elReturn = <Button
+                                title="Following"
+                                onPress={ handleFollowing }></Button>;
+                else
+                    elReturn = <Button
+                                title="Follow"
+                                onPress={ handleFollow }
+                                ></Button>;
+            }
         }
         return elReturn;
     }
@@ -114,8 +162,9 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
     authUser: state.auth.user,
     posts: state.posts.all,
+    following: state.following.all,
 });
 
-const mapDispatchToProps = { fetchUserPosts, logOut }
+const mapDispatchToProps = { fetchUserPosts, logOut, registerFetchListenerForUserFollowing }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);
